@@ -2,6 +2,9 @@ const express = require('express');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
 const router = require('./router');
+const dotenv = require('dotenv');
+
+dotenv.config();
 
 const port = 5000;
 
