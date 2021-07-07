@@ -1,5 +1,6 @@
 const User = require('../models/userModel');
 const bcrypt = require('bcrypt');
+const { generateAccessToken } = require('../auth/tokens');
 
 const createUser = async (req, res) => {
   const { username, password } = req.body;
@@ -14,7 +15,8 @@ const createUser = async (req, res) => {
 
   const newUser = new User({ username, password: hashedPassword });
   await newUser.save();
-  res.status(201).send();
+  const userToken = generateAccessToken(username);
+  res.status(201).json({ token: userToken });
 };
 
 const loginUser = async (req, res) => {
@@ -23,7 +25,8 @@ const loginUser = async (req, res) => {
   if (user === null) res.status(404).json({ message: 'User does not exist' });
   const correctPassword = await bcrypt.compare(password, user.password);
   if (!correctPassword) res.status(400).json({ message: 'Incorrect password' });
-  res.status(200).send();
+  const userToken = generateAccessToken(username);
+  res.status(200).json({ token: userToken });
 };
 
 module.exports = { createUser, loginUser };
